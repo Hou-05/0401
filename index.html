@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 東京夢幻之旅 - 5天4夜行程規劃 (Gemini AI 版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+
+        .spot-dot {
+            position: absolute;
+            left: 12px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px #3b82f6;
+            z-index: 10;
+        }
+
+        .nav-btn, .ai-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+        }
+
+        .nav-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .nav-btn:hover {
+            background-color: #e2e8f0;
+            color: #2563eb;
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .ai-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .lang-select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 4px 24px 4px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-select option {
+            color: #1e293b;
+        }
+
+        /* AI Loading Overlay */
+        #ai-loading {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-direction: column;
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        #ai-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 90;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <div id="ai-loading">
+        <div class="text-4xl mb-4 pulse">✨</div>
+        <p class="text-xl font-bold tracking-widest">Gemini 正在思考中...</p>
+    </div>
+
+    <div id="ai-modal" onclick="closeAiModal()">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">✨ Gemini AI 建議</h2>
+                <button onclick="closeAiModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <div id="ai-content" class="prose prose-slate max-w-none text-gray-700 leading-relaxed">
+                <!-- AI Response will be here -->
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                <button onclick="closeAiModal()" class="px-6 py-2 bg-gray-100 text-gray-600 rounded-full font-medium hover:bg-gray-200 transition-all">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Header -->
+    <header class="relative h-[45vh] flex items-center justify-center text-white overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=1200" alt="Tokyo Night" class="w-full h-full object-cover brightness-50">
+        </div>
+        <!-- Language Switcher -->
+        <div class="absolute top-6 right-6 z-50 flex items-center bg-black/20 backdrop-blur-md p-2 rounded-xl border border-white/20">
+            <i class="fas fa-globe mr-2 text-sm"></i>
+            <select onchange="changeLanguage(this.value)" class="lang-select text-sm font-medium">
+                <option value="zh">繁體中文</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+            </select>
+        </div>
+        <div class="relative z-10 text-center px-4">
+            <h1 id="hero-title" class="text-4xl md:text-6xl font-bold mb-4 tracking-wider">東京夢幻之旅 2026</h1>
+            <p id="hero-subtitle" class="text-lg md:text-xl font-light opacity-90">5 天 4 夜精緻自由行規劃</p>
+            <button onclick="getAiAdvice('GENERAL_TIPS')" class="ai-btn mt-6 py-3 px-8 text-lg font-bold">
+                ✨ 獲取 AI 行程穿著建議
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm mb-8">
+        <div class="max-w-4xl mx-auto px-4 overflow-x-auto">
+            <div class="flex space-x-2 py-4 justify-between min-w-[550px]">
+                <button onclick="showDay(1)" id="btn-day1" class="day-btn active px-5 py-2 rounded-full font-medium transition-all" data-day="1">Day 1 抵達下町</button>
+                <button onclick="showDay(2)" id="btn-day2" class="day-btn px-5 py-2 rounded-full font-medium transition-all" data-day="2">Day 2 最新地標</button>
+                <button onclick="showDay(3)" id="btn-day3" class="day-btn px-5 py-2 rounded-full font-medium transition-all" data-day="3">Day 3 夢幻體驗</button>
+                <button onclick="showDay(4)" id="btn-day4" class="day-btn px-5 py-2 rounded-full font-medium transition-all" data-day="4">Day 4 數位藝術</button>
+                <button onclick="showDay(5)" id="btn-day5" class="day-btn px-5 py-2 rounded-full font-medium transition-all" data-day="5">Day 5 採買歸途</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4" id="main-content">
+        <!-- 行程內容會由 JavaScript 動態渲染 -->
+    </main>
+
+    <!-- Mobile Footer -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-4 px-6 md:hidden z-50">
+        <div class="flex justify-around items-center text-gray-500">
+            <button onclick="showDay(1)" class="flex flex-col items-center">
+                <i class="fas fa-star text-xl text-blue-600"></i>
+                <span class="text-[10px] mt-1" id="footer-fav">必去</span>
+            </button>
+            <button onclick="getAiAdvice('RANDOM_FACT')" class="flex flex-col items-center text-purple-600">
+                <i class="fas fa-magic text-xl"></i>
+                <span class="text-[10px] mt-1">✨ AI 靈感</span>
+            </button>
+            <button class="flex flex-col items-center">
+                <i class="fas fa-map-marked-alt text-xl"></i>
+                <span class="text-[10px] mt-1" id="footer-map">地圖</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const apiKey = ""; // 執行環境會自動填入
+        const i18n = {
+            zh: {
+                heroTitle: "東京夢幻之旅 2026",
+                heroSubtitle: "5 天 4 夜精緻自由行規劃",
+                navDay1: "Day 1 抵達下町",
+                navDay2: "Day 2 最新地標",
+                navDay3: "Day 3 夢幻體驗",
+                navDay4: "Day 4 數位藝術",
+                navDay5: "Day 5 採買歸途",
+                footerFav: "必去",
+                footerMap: "地圖",
+                footerHistory: "歷史",
+                guideTo: "導航至",
+                findBranch: "找尋附近分店",
+                aiAdvice: "✨ AI 推薦隱藏景點",
+                aiLanguage: "✨ AI 日文助教",
+                planA: "方案 A：寶可夢迷",
+                planB: "方案 B：迪士尼狂粉",
+                schemeMsg: "今日提供兩個不同的夢幻體驗方案：",
+                transport: "交通要點",
+                booking: "預約提醒",
+                hotel: "住宿建議",
+                days: {
+                    1: [
+                        { time: "10:00 - 14:00", title: "抵達東京 & 上野/淺草飯店", desc: "搭乘 Skyliner 從成田機場直達上野，先去飯店寄放行李。", query: "上野駅" },
+                        { time: "14:30 - 17:00", title: "淺草寺 & 仲見世通", desc: "拜訪雷門，穿過充滿古老氛圍的商店街。", query: "淺草寺", img: "https://images.unsplash.com/photo-1542931287-023b922fa89b?auto=format&fit=crop&q=80&w=600" },
+                        { time: "18:00 - 20:00", title: "東京晴空塔 Skytree", desc: "俯瞰關東平原，捕捉日落美景。", query: "東京晴空塔" },
+                        { isMeal: true, title: "晚餐推介：牛舌日和", desc: "體驗鮮嫩多汁的 2026 年度熱門牛舌料理。", query: "牛舌日和 東京" }
+                    ],
+                    2: [
+                        { time: "09:00 - 11:30", title: "明治神宮", desc: "都市綠洲的莊嚴與平靜。", query: "明治神宮" },
+                        { time: "12:00 - 16:00", title: "澀谷丸井百貨 & 表參道", desc: "欣賞木造環保建築，挖掘潮流精品。", query: "澀谷丸井百貨" },
+                        { time: "17:00 - 19:00", title: "SHIBUYA SKY", desc: "挑戰驚險又美麗的「Edge」角落自拍。", query: "SHIBUYA SKY", img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=600" },
+                        { isMeal: true, title: "晚餐推介：敘敘苑 (新宿店)", desc: "著名的燒肉饗宴搭配都市夜景。", query: "叙々苑 新宿中央東口店" }
+                    ],
+                    3: "SPECIAL_D3",
+                    4: [
+                        { time: "09:00 - 12:00", title: "teamLab Planets", desc: "在豐洲與光影共舞，體驗沉浸式藝術。", query: "teamLab Planets TOKYO" },
+                        { time: "13:30 - 17:00", title: "麻布台之丘", desc: "探索日本最高建築，體驗城市奢華。", query: "麻布台ヒルズ" },
+                        { isMeal: true, isTea: true, title: "下午茶：幸福鬆餅", desc: "回味這份空氣感的鬆軟，甜點控首選。", query: "幸せのパンケーキ 銀座店" }
+                    ],
+                    5: [
+                        { time: "10:00 - 12:30", title: "築地場外市場", desc: "最後的海鮮衝刺，享受新鮮漁獲。", query: "築地場外市場" },
+                        { time: "13:00 - 15:30", title: "銀座購物巡禮", desc: "在精品與旗艦店中進行最後採購。", query: "銀座三越" },
+                        { time: "16:00 -", title: "踏上歸途", desc: "搭乘特急前往機場，結束美好旅程。", query: "成田空港" }
+                    ]
+                }
+            },
+            en: {
+                heroTitle: "Tokyo Dream 2026",
+                heroSubtitle: "5 Days 4 Nights Premium Itinerary",
+                navDay1: "Day 1 Arrival & Shitamachi",
+                navDay2: "Day 2 New Landmarks",
+                navDay3: "Day 3 Dream Experience",
+                navDay4: "Day 4 Digital Art",
+                navDay5: "Day 5 Shopping & Return",
+                footerFav: "Must Go",
+                footerMap: "Map",
+                footerHistory: "History",
+                guideTo: "Navigate to",
+                findBranch: "Find branches",
+                aiAdvice: "✨ Hidden Gems",
+                aiLanguage: "✨ AI Phrases",
+                planA: "Plan A: Pokémon Fans",
+                planB: "Plan B: Disney Fans",
+                schemeMsg: "Today offers two different dream experiences:",
+                transport: "Transport",
+                booking: "Booking Tips",
+                hotel: "Accommodation",
+                days: {
+                    1: [
+                        { time: "10:00 - 14:00", title: "Arrival & Ueno/Asakusa Hotel", desc: "Take the Skyliner directly to Ueno and drop off your luggage.", query: "Ueno Station" },
+                        { time: "14:30 - 17:00", title: "Senso-ji & Nakamise", desc: "Visit Kaminarimon and walk through the historic shopping street.", query: "Senso-ji", img: "https://images.unsplash.com/photo-1542931287-023b922fa89b?auto=format&fit=crop&q=80&w=600" },
+                        { time: "18:00 - 20:00", title: "Tokyo Skytree", desc: "Overlook the Kanto Plain and capture the sunset view.", query: "Tokyo Skytree" },
+                        { isMeal: true, title: "Dinner: Gyutan Biyori", desc: "Experience the juicy thick-cut ox tongue, a 2026 favorite.", query: "Gyutan Biyori Tokyo" }
+                    ],
+                    2: [
+                        { time: "09:00 - 11:30", title: "Meiji Jingu", desc: "Solemnity and peace in the urban oasis.", query: "Meiji Jingu" },
+                        { time: "12:00 - 16:00", title: "Shibuya Marui & Omotesando", desc: "Eco-friendly wooden architecture and trendy boutiques.", query: "Shibuya Marui" },
+                        { time: "17:00 - 19:00", title: "SHIBUYA SKY", desc: "Take a selfie at the stunning 'Edge' corner.", query: "SHIBUYA SKY", img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=600" },
+                        { isMeal: true, title: "Dinner: Jojoen (Shinjuku)", desc: "Famous BBQ feast with a sparkling city view.", query: "Jojoen Shinjuku" }
+                    ],
+                    3: "SPECIAL_D3",
+                    4: [
+                        { time: "09:00 - 12:00", title: "teamLab Planets", desc: "Dance with light and shadows in Toyosu.", query: "teamLab Planets TOKYO" },
+                        { time: "13:30 - 17:00", title: "Azabudai Hills", desc: "Explore Japan's tallest building and luxury lifestyle.", query: "Azabudai Hills" },
+                        { isMeal: true, isTea: true, title: "Tea Time: A Happy Pancake", desc: "Perfect fluffy pancakes for dessert lovers.", query: "A Happy Pancake Ginza" }
+                    ],
+                    5: [
+                        { time: "10:00 - 12:30", title: "Tsukiji Outer Market", desc: "Final seafood sprint with fresh sushi.", query: "Tsukiji Outer Market" },
+                        { time: "13:00 - 15:30", title: "Ginza Shopping", desc: "Last-minute luxury and flagship store shopping.", query: "Ginza Mitsukoshi" },
+                        { time: "16:00 -", title: "Departure", desc: "Heading to the airport with wonderful memories.", query: "Narita Airport" }
+                    ]
+                }
+            },
+            ja: {
+                heroTitle: "東京ドリーム 2026",
+                heroSubtitle: "4泊5日 究極のフリープラン",
+                navDay1: "Day 1 下町到着",
+                navDay2: "Day 2 最新スポット",
+                navDay3: "Day 3 夢の体験",
+                navDay4: "Day 4 デジタルアート",
+                navDay5: "Day 5 お買物・帰路",
+                footerFav: "おすすめ",
+                footerMap: "地図",
+                guideTo: "ナビを開始",
+                findBranch: "店舗を探す",
+                aiAdvice: "✨ AI おすすめ穴場",
+                aiLanguage: "✨ AI 会話アシスト",
+                planA: "プラン A：ポケモン",
+                planB: "プラン B：ディズニー",
+                schemeMsg: "本日は2つの夢の体験プランから選べます：",
+                transport: "交通ガイド",
+                booking: "予約の注意",
+                hotel: "宿泊アドバイス",
+                days: {
+                    1: [
+                        { time: "10:00 - 14:00", title: "東京到着 & ホテルへ", desc: "スカイライナーで上野へ。まずはホテルに荷物を預けます。", query: "上野駅" },
+                        { time: "14:30 - 17:00", title: "浅草寺 & 仲見世通り", desc: "雷門を訪れ、歴史ある商店街を散策しましょう。", query: "浅草寺", img: "https://images.unsplash.com/photo-1542931287-023b922fa89b?auto=format&fit=crop&q=80&w=600" },
+                        { time: "18:00 - 20:00", title: "東京スカイツリー", desc: "地上最高の景色から関東平野を一望します。", query: "東京スカイツリー" },
+                        { isMeal: true, title: "ディナー：牛たん日和", desc: "2026年話題の厚切り牛たんを堪能。", query: "牛たん日和 東京" }
+                    ],
+                    2: [
+                        { time: "09:00 - 11:30", title: "明治神宮", desc: "都会のオアシスで心静かなひとときを。", query: "明治神宮" },
+                        { time: "12:00 - 16:00", title: "渋谷マルイ & 表参道", desc: "環境に配慮した木造建築と最新トレンドをチェック。", query: "渋谷マルイ" },
+                        { time: "17:00 - 19:00", title: "SHIBUYA SKY", desc: "渋谷最高峰の展望台で最高の1枚を。", query: "SHIBUYA SKY", img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=600" },
+                        { isMeal: true, title: "ディナー：叙々苑 (新宿店)", desc: "夜景と共に楽しむ至福の焼肉タイム。", query: "叙々苑 新宿" }
+                    ],
+                    3: "SPECIAL_D3",
+                    4: [
+                        { time: "09:00 - 12:00", title: "teamLab Planets", desc: "豊洲で光と影の没入型アートを体験。", query: "teamLab Planets TOKYO" },
+                        { time: "13:30 - 17:00", title: "麻布台ヒルズ", desc: "日本最高層のビルでラグジュアリーな体験を。", query: "麻布台ヒルズ" },
+                        { isMeal: true, isTea: true, title: "スイーツ：幸せのパンケーキ", desc: "ふわふわのパンケーキで至福の午後を。", query: "幸せのパンケーキ 銀座" }
+                    ],
+                    5: [
+                        { time: "10:00 - 12:30", title: "築地場外市場", desc: "新鮮な海鮮で最後の食べ歩き。", query: "築地場外市場" },
+                        { time: "13:00 - 15:30", title: "銀座ショッピング", desc: "フラッグシップショップで最後のお買い物。", query: "銀座三越" },
+                        { time: "16:00 -", title: "帰路へ", desc: "素敵な思い出と共に空港へ向かいます。", query: "成田空港" }
+                    ]
+                }
+            }
+        };
+
+        let currentLang = 'zh';
+        let currentDay = 1;
+
+        async function callGemini(prompt) {
+            const loading = document.getElementById('ai-loading');
+            loading.style.display = 'flex';
+            
+            try {
+                let retries = 0;
+                const maxRetries = 5;
+                let delay = 1000;
+
+                while(retries < maxRetries) {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            systemInstruction: { parts: [{ text: `你是一位資深東京旅遊專家。你的回答應該生動、實用且溫馨。使用 Markdown 格式美化。當前語言為：${currentLang}` }] }
+                        })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        loading.style.display = 'none';
+                        return result.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，AI 暫時無法回應。";
+                    } else if (response.status === 429) {
+                        await new Promise(r => setTimeout(r, delay));
+                        delay *= 2;
+                        retries++;
+                    } else {
+                        throw new Error('API Call Failed');
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                loading.style.display = 'none';
+                return "發生錯誤，請稍後再試。";
+            }
+        }
+
+        async function getAiAdvice(type, spotName = "") {
+            let prompt = "";
+            if (type === 'GENERAL_TIPS') {
+                prompt = `根據這份行程：第一天上野淺草、第二天澀谷、第三天迪士尼或讀賣樂園、第四天 teamLab 與麻布台、第五天築地銀座。請給我 2026 年東京旅遊的整體建議，包含當前穿著建議、天氣預報（假設性）、以及一項必備的小物品建議。用繁體中文回答。`;
+            } else if (type === 'SPOT_GEMS') {
+                prompt = `針對景點「${spotName}」，請推薦 2 個走路 10 分鐘內可到的隱藏版美食或拍照打卡點。不要包含已經在行程裡的內容。用繁體中文回答。`;
+            } else if (type === 'PHRASES') {
+                prompt = `針對在「${spotName}」這個場合，提供 3 句實用的旅遊日語對話，包含日文、羅馬拼音和中文意思。並簡單說明在該處的溝通禮節。`;
+            } else if (type === 'RANDOM_FACT') {
+                prompt = `告訴我一個關於東京的冷知識或最新 2026 年的熱門流行文化。`;
+            }
+
+            const aiResponse = await callGemini(prompt);
+            showAiModal(aiResponse);
+        }
+
+        function showAiModal(content) {
+            const modal = document.getElementById('ai-modal');
+            const contentDiv = document.getElementById('ai-content');
+            
+            // Basic Markdown to HTML converter (Simplified for this context)
+            const html = content
+                .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+                .replace(/\n/g, '<br>');
+
+            contentDiv.innerHTML = html;
+            modal.style.display = 'flex';
+        }
+
+        function closeAiModal() {
+            document.getElementById('ai-modal').style.display = 'none';
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang === 'zh' ? 'zh-TW' : (lang === 'ja' ? 'ja' : 'en');
+            renderUI();
+        }
+
+        function renderUI() {
+            const data = i18n[currentLang];
+            document.getElementById('hero-title').innerText = data.heroTitle;
+            document.getElementById('hero-subtitle').innerText = data.heroSubtitle;
+            document.getElementById('btn-day1').innerText = data.navDay1;
+            document.getElementById('btn-day2').innerText = data.navDay2;
+            document.getElementById('btn-day3').innerText = data.navDay3;
+            document.getElementById('btn-day4').innerText = data.navDay4;
+            document.getElementById('btn-day5').innerText = data.navDay5;
+            document.getElementById('footer-fav').innerText = data.footerFav;
+            document.getElementById('footer-map').innerText = data.footerMap;
+            renderDayContent();
+        }
+
+        function renderDayContent() {
+            const container = document.getElementById('main-content');
+            const dayData = i18n[currentLang].days[currentDay];
+            const t = i18n[currentLang];
+
+            if (dayData === "SPECIAL_D3") {
+                container.innerHTML = `
+                    <div class="tab-content active">
+                        <div class="bg-blue-50 p-6 rounded-2xl mb-10 text-center">
+                            <p class="text-blue-800 font-medium italic">${t.schemeMsg}</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="glass-card rounded-2xl p-6 shadow-sm">
+                                <h3 class="text-xl font-bold mb-3"><i class="fas fa-ghost mr-2 text-red-500"></i>${t.planA}</h3>
+                                <a href="https://www.google.com/maps/search/?api=1&query=よみうりランド" target="_blank" class="nav-btn">
+                                    <i class="fas fa-location-arrow"></i>${t.guideTo} Yomiuriland
+                                </a>
+                                <button onclick="getAiAdvice('SPOT_GEMS', '讀賣樂園')" class="ai-btn">✨ AI 擴充建議</button>
+                            </div>
+                            <div class="glass-card rounded-2xl p-6 shadow-sm">
+                                <h3 class="text-xl font-bold mb-3"><i class="fas fa-hat-wizard mr-2 text-indigo-500"></i>${t.planB}</h3>
+                                <a href="https://www.google.com/maps/search/?api=1&query=東京ディズニーシー" target="_blank" class="nav-btn">
+                                    <i class="fas fa-location-arrow"></i>${t.guideTo} DisneySea
+                                </a>
+                                <button onclick="getAiAdvice('SPOT_GEMS', '東京迪士尼海洋')" class="ai-btn">✨ AI 秘密玩法</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                let html = `<div class="tab-content active"><div class="relative pl-12 timeline-line">`;
+                dayData.forEach(spot => {
+                    const icon = spot.isMeal ? (spot.isTea ? 'fa-cookie' : 'fa-utensils') : 'fa-map-marker-alt';
+                    const colorClass = spot.isMeal ? (spot.isTea ? 'bg-pink-500 border-pink-500' : 'bg-orange-500 border-orange-500') : 'bg-blue-600 border-white';
+                    const cardBorder = spot.isMeal ? (spot.isTea ? 'border-l-4 border-pink-400' : 'border-l-4 border-orange-400') : '';
+                    
+                    html += `
+                        <div class="mb-10">
+                            <div class="spot-dot ${colorClass}"></div>
+                            <div class="glass-card rounded-2xl p-6 shadow-sm ${cardBorder}">
+                                ${spot.time ? `<span class="text-blue-600 font-bold text-sm uppercase tracking-widest">${spot.time}</span>` : ''}
+                                <h3 class="text-xl font-bold mt-1 ${spot.isMeal ? 'text-orange-600' : ''}">
+                                    ${spot.isMeal ? `<i class="fas ${icon} mr-2"></i>` : ''}${spot.title}
+                                </h3>
+                                <p class="text-gray-600 mt-2">${spot.desc}</p>
+                                ${spot.img ? `<img src="${spot.img}" class="mt-4 rounded-xl w-full h-48 object-cover" alt="spot image">` : ''}
+                                <div class="flex flex-wrap">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.query)}" target="_blank" class="nav-btn ${spot.isMeal ? (spot.isTea ? 'text-pink-600' : 'text-orange-600') : ''}">
+                                        <i class="fas ${spot.isMeal ? 'fa-map-marker-alt' : 'fa-location-arrow'}"></i>${spot.isMeal ? t.findBranch : t.guideTo}
+                                    </a>
+                                    <button onclick="getAiAdvice('SPOT_GEMS', '${spot.title}')" class="ai-btn">${t.aiAdvice}</button>
+                                    <button onclick="getAiAdvice('PHRASES', '${spot.title}')" class="ai-btn bg-slate-800">${t.aiLanguage}</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML = html;
+            }
+        }
+
+        function showDay(dayNumber) {
+            currentDay = dayNumber;
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-day="${dayNumber}"]`).classList.add('active');
+            renderDayContent();
+            window.scrollTo({ top: 350, behavior: 'smooth' });
+        }
+
+        window.onload = () => renderUI();
+    </script>
+</body>
+</html>
